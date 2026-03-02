@@ -1,6 +1,7 @@
 package dev.subashcodes.carrentalsystem.controller;
 
-import dev.subashcodes.carrentalsystem.model.Car;
+import dev.subashcodes.carrentalsystem.exception.InvalidDataException;
+import dev.subashcodes.carrentalsystem.model.Cars;
 import dev.subashcodes.carrentalsystem.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +17,20 @@ public class AdminController {
 
 
     @PostMapping("/car/add")
-    public String add(@RequestBody Car car){
+    public String add(@RequestBody Cars car){
 
         System.out.print(car.toString());
        //pass the car to service layer
+        String response = null;
+        try {
+            response = carService.addNewCar(car);
+        } catch (InvalidDataException e) {
 
-        String response = carService.addNewCar(car);
+           String message =  e.getMessage();
+           return message;
+        }
 
-        return car.toString();
+        return response;
     }
 
     @PutMapping("/car/update")
