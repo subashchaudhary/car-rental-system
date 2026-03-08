@@ -1,10 +1,9 @@
 package dev.subashcodes.carrentalsystem.repository;
 
-import dev.subashcodes.carrentalsystem.model.Cars;
+import dev.subashcodes.carrentalsystem.model.Booking;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository  //tells spring to crate bean
-public interface CarRepository extends MongoRepository<Cars, Integer> {
-
+@Repository
+public interface BookingRepository extends MongoRepository<Booking, Integer> {
 }

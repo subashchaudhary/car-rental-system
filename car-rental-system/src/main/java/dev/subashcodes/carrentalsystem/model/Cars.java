@@ -3,11 +3,11 @@ package dev.subashcodes.carrentalsystem.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.stereotype.Component;
 
 @Getter
 @Setter
-
-@Document //this tells this is not a normal java calls, but mongodb collections.
+@Document("cars") //this tells this is not a normal java calls, but mongodb collections.
 public class Cars {
 
     private int id;
@@ -16,6 +16,7 @@ public class Cars {
     private String brandName;
     private String numberPlate;
     private boolean isAvailable;
+    private float pricePerDay;
 
 
     @Override

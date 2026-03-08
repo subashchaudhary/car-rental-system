@@ -6,6 +6,8 @@ import dev.subashcodes.carrentalsystem.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service // spring will create a bean
@@ -17,18 +19,7 @@ public class CarService {
     public String addNewCar (Cars car) throws InvalidDataException {
 
        // 1. validate the input data.
-        if(car == null){
-            throw new InvalidDataException("Invalid Car Details");
-        }
-        if(car.getName().isEmpty()){
-            throw new InvalidDataException("Car Name is Required");
-        }else if(car.getModel().isEmpty()){
-            throw new InvalidDataException("Car's model is Required");
-        }else if(car.getBrandName().isEmpty()){
-            throw new InvalidDataException("Car Brand Name is Request");
-        }else if(car.getNumberPlate().isEmpty()){
-            throw  new InvalidDataException("Number plate is Required");
-        }
+       validateCarDetails(car);
 
         //2. Insert in to our database
         int newId = new Random().nextInt(10000);
@@ -47,7 +38,109 @@ public class CarService {
         }
 
     }
+
+    public String patchCarDetails(Integer id, Cars car) throws InvalidDataException {
+        //1. validate the input data
+
+        //2. check if car with given id exist in database or not
+        boolean isExist = carRepository.existsById(id);
+        if (!isExist) {
+            return "Car with id: " + id + " does not exist";
+        }
+
+        Optional<Cars> existingCarOpt = carRepository.findById(id);
+
+        Cars existingCar = existingCarOpt.get();
+
+
+
+        if (car.getName() != null && !car.getName().isEmpty()) {
+            existingCar.setName(car.getName());
+        }
+        if (car.getModel() != null && !car.getModel().isEmpty()) {
+            existingCar.setModel(car.getModel());
+        }
+        if (car.getBrandName() != null && !car.getBrandName().isEmpty()) {
+            existingCar.setBrandName(car.getBrandName());
+        }
+        if (car.getNumberPlate() != null && !car.getNumberPlate().isEmpty()) {
+            existingCar.setNumberPlate(car.getNumberPlate());
+        }
+        existingCar.setId(id);
+        existingCar.setAvailable(car.isAvailable());
+        //3. update the details of the car in database
+        Cars updatedCar = carRepository.save(existingCar); //if already exist then it will update else it will create new entiry.
+
+        //4. return success message or error message
+        if (updatedCar == null) {
+            return "Failed to update car details for car id: " + id;
+        } else {
+            return "Successfully updated car details for car id: " + id;
+        }
+    }
+
+    public String updateCarDetails(Integer id, Cars car) throws InvalidDataException {
+        //1. validate the input data
+        validateCarDetails(car);
+
+        //2. check if car with given id exist in database or not
+        boolean isExist = carRepository.existsById(id);
+        if (!isExist) {
+            return "Car with id: " + id + " does not exist";
+        }
+
+        //3. update the details of the car in database
+        Cars updatedCar = carRepository.save(car); //if already exist then it will update else it will create new entiry.
+
+        //4. return success message or error message
+        if (updatedCar == null) {
+            return "Failed to update car details for car id: " + id;
+        } else {
+            return "Successfully updated car details for car id: " + id;
+        }
+    }
+
+
+    private void validateCarDetails(Cars car) throws InvalidDataException {
+
+        // validate the input data of car details.
+        if (car == null) {
+            throw new InvalidDataException("Invalid Car Details");
+        }
+        if (car.getName().isEmpty()) {
+            throw new InvalidDataException("Car Name is Required");
+        } else if (car.getModel().isEmpty()) {
+            throw new InvalidDataException("Car's model is Required");
+        } else if (car.getBrandName().isEmpty()) {
+            throw new InvalidDataException("Car Brand Name is Request");
+        } else if (car.getNumberPlate().isEmpty()) {
+            throw new InvalidDataException("Number plate is Required");
+        }
+    }
+
+    public List<Cars> getAllCars() {
+        return carRepository.findAll(); // it will return list of all cars in database
+    }
+
+     public Cars getCarById(Integer id) throws InvalidDataException {
+         boolean isExist = carRepository.existsById(id);
+         if (!isExist) {
+             throw new InvalidDataException("Car with id: " + id + " does not exist");
+         }
+         return carRepository.findById(id).get();
+     }
+
+     public String deleteCarById(Integer id) throws InvalidDataException {
+         boolean isExist = carRepository.existsById(id);
+         if (!isExist) {
+             throw new InvalidDataException("Car with id: " + id + " does not exist");
+         }
+         carRepository.deleteById(id);
+         return "Successfully deleted car details for car id: " + id;
+     }
+
 }
+
 
 
 /**

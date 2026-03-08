@@ -33,24 +33,67 @@ public class AdminController {
         return response;
     }
 
-    @PutMapping("/car/update")
-    public String update(){
-        return "Updated Successfully";
+    @PutMapping("/car/update/{carId}")
+    public String update(@PathVariable("carId") Integer id, @RequestBody Cars car){
+
+        System.out.print("Incomming request to update car details for car id: " + id);
+        String response = null;
+        try{
+            response = carService.updateCarDetails(id, car);
+        }catch (InvalidDataException e){
+            String message = e.getMessage();
+            return message;
+        }
+
+        return response;
+    }
+
+    @PatchMapping("/car/patch/{carId}")
+    public String patch(@PathVariable("carId") Integer id, @RequestBody Cars car){
+        System.out.print("Incomming request to update car details for car id: " + id);
+        String response = null;
+        try{
+            response = carService.patchCarDetails(id, car);
+        }catch (InvalidDataException e){
+            String message = e.getMessage();
+            return message;
+        }
+
+        return response;
     }
 
     @GetMapping("/cars")
-    public String getAllCars(){
-        return List.of().toString();
+    public List<Cars> getAllCars(){
+        System.out.println("Incoming request to get all cars");
+        List<Cars> cars = carService.getAllCars();
+        return cars;
+
     }
 
-    @GetMapping("/car/123")
-    public String getCarById(){
-        return "Car 123";
+    @GetMapping("/car/{carId}")
+    public Cars getCarById(@PathVariable("carId") Integer id){
+         System.out.println("Incoming request to get car details for car id: " + id);
+         Cars response = null;
+         try {
+             response = carService.getCarById(id);
+         } catch (InvalidDataException e) {
+             String message = e.getMessage();
+
+         }
+        return response;
     }
 
 
-    @DeleteMapping("/car/delete")
-    public String delete(){
-        return "Deleted Successfully";
+    @DeleteMapping("/car/delete/{carId}")
+    public String delete(@PathVariable("carId") Integer id){
+            System.out.println("Incoming request to delete car details for car id: " + id);
+            String response = null;
+            try {
+                response = carService.deleteCarById(id);
+            } catch (InvalidDataException e) {
+                String message = e.getMessage();
+                return message;
+            }
+            return response;
     }
 }
