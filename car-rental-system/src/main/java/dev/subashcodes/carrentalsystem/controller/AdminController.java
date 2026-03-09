@@ -96,4 +96,11 @@ public class AdminController {
             }
             return response;
     }
+
+    @GetMapping("/cars/brand")
+    public List<Cars> getAllCarsByBrandName(@RequestParam("brandName") String brandName){
+        System.out.println("Incoming request to get all cars by brand name: " + brandName);
+        List<Cars> cars = carService.getAllCarByBrandName(brandName);
+        return cars;
+    }
 }

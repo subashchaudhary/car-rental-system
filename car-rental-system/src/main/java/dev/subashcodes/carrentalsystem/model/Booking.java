@@ -22,5 +22,8 @@ public class Booking {
     private LocalDateTime endDate;
     private int totalDays;
     private double totalCost;
+    private boolean isCancel;  //to check if booked success, or indicate the cancle
+
+    private boolean isReturned; //to check if the car is returned or not
 
 }

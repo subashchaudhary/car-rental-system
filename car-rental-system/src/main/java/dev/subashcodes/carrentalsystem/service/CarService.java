@@ -139,6 +139,19 @@ public class CarService {
          return "Successfully deleted car details for car id: " + id;
      }
 
+//     public Car getCarByNumberPlate(String numberPlate) throws InvalidDataException {
+//         Cars car = carRepository.findByNumberPlate(numberPlate);
+//         if (car == null) {
+//             throw new InvalidDataException("Car with number plate: " + numberPlate + " does not exist");
+//         }
+//         return car;
+//     }
+
+
+     public List<Cars> getAllCarByBrandName(String brandName) {
+         return carRepository.findAllByBrandName(brandName);
+     }
+
 }
 
 

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -82,4 +83,96 @@ public class BookingService {
             throw e;
         }
     }
+
+
+    public boolean cancelCar(Integer bookingId) throws InvalidDataException {
+        // Logic to cancel a car booking
+
+        try {
+            Booking booking = bookingRepository.findById(bookingId).orElse(null);
+            if (booking == null) {
+                throw new InvalidDataException("Booking Not Found");
+            } else {
+                booking.setCancel(true);
+                bookingRepository.save(booking);
+                //update the availability status of the car
+                Integer carId = booking.getCarId();
+                Cars car = carService.getCarById(carId);
+                if (car != null) {
+                    car.setAvailable(true); //this car is now available for booking
+                    carService.updateCarDetails(carId, car);
+                    return true;
+                }
+            }
+
+        } catch (Exception ex) {
+            throw ex;
+        }
+
+        return  false;
+    }
+
+
+    public boolean returnCar(Integer bookingId) throws InvalidDataException {
+        // Logic to return a car after use
+
+        try {
+            Booking booking = bookingRepository.findById(bookingId).orElse(null);
+            if (booking == null) {
+                throw new InvalidDataException("Booking Not Found");
+            } else {
+                booking.setReturned(true);
+                bookingRepository.save(booking);
+                //update the availability status of the car
+                Integer carId = booking.getCarId();
+                Cars car = carService.getCarById(carId);
+                if (car != null) {
+                    car.setAvailable(true); //this car is now available for booking
+                    carService.updateCarDetails(carId, car);
+                    return true;
+                }
+            }
+        }catch (Exception ex) {
+             throw  ex;
+        }
+        return  false;
+    }
+
+    public Booking getBookingById(Integer bookingId) throws InvalidDataException {
+        // Logic to get the details of a specific booking by its ID
+
+        try {
+            Booking booking = bookingRepository.findById(bookingId).orElse(null);
+            if (booking == null) {
+                throw new InvalidDataException("Booking Not Found");
+            } else {
+                ;
+                return booking;
+            }
+        } catch (Exception ex) {
+        throw ex;}
+    }
+
+
+    public List<Booking> getAllBookings() {
+        // Logic to get a list of all bookings
+        return bookingRepository.findAll();
+    }
+
+    public boolean deleteBooking(Integer bookingId) throws InvalidDataException {
+        // Logic to delete a specific booking by its ID
+
+        try {
+            Booking booking = bookingRepository.findById(bookingId).orElse(null);
+            if (booking == null) {
+                throw new InvalidDataException("Booking Not Found");
+            } else {
+                bookingRepository.delete(booking);
+                return true;
+            }
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
 }
